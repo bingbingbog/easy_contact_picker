@@ -27,6 +27,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
   static final String METHOD_CALL_NATIVE = "selectContactNative";
   // 获取联系人列表
   static final String METHOD_CALL_LIST = "selectContactList";
+  static final String CallHistoryList = "callHistoryList";
   private Activity mActivity;
   private ContactsCallBack contactsCallBack;
 
@@ -64,6 +65,21 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
       intentToContact();
     }
     else if (call.method.equals(METHOD_CALL_LIST)){
+      contactsCallBack = new ContactsCallBack() {
+        @Override
+        void successWithList(List<HashMap> contacts) {
+          super.successWithList(contacts);
+          result.success(contacts);
+        }
+
+        @Override
+        void error() {
+          super.error();
+        }
+      };
+      getContacts();
+    }
+     else if (call.method.equals(CallHistoryList)){
       contactsCallBack = new ContactsCallBack() {
         @Override
         void successWithList(List<HashMap> contacts) {
