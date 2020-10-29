@@ -73,17 +73,17 @@ class Contact {
 }
 /// Represents a contact selected by the user.
 class Contacts {
-  Contacts({this.callNumber, this.callNumber, this.callDateStr,this.callDurationStr});
+  Contacts({this.callName, this.callNumber, this.callDateStr,this.callDurationStr});
 
   factory Contacts.fromMap(Map<dynamic, dynamic> map) => new Contacts(
-    callName: map['callNumber'],
+    callName: map['callName'],
     callNumber: map['callNumber'],
     callDateStr: map['callDateStr'],
     callDurationStr: map['callDurationStr'],
   );
 
   /// The full name of the contact, e.g. "Dr. Daniel Higgens Jr.".
-  final String callNumber;
+  final String callName;
 
   /// The phone number of the contact.
   final String callNumber;
@@ -93,5 +93,5 @@ class Contacts {
   final String callDurationStr;
 
   @override
-  String toString() => '$callNumber: $callNumber -$callDateStr -$callDurationStr';
+  String toString() => '$callName: $callNumber -$callDateStr -$callDurationStr';
 }
