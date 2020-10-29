@@ -54,7 +54,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
           , CallLog.Calls.NUMBER// 通话记录的电话号码
           , CallLog.Calls.DATE// 通话记录的日期
           , CallLog.Calls.DURATION// 通话时长
-          , CallLog.Calls.TYPE};/
+          , CallLog.Calls.TYPE};
   private Activity mActivity;
   private ContactsCallBack contactsCallBack;
 
