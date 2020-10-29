@@ -119,7 +119,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
           super.error();
         }
       };
-      getCallHistoryList(mActivity);
+      getCallHistoryList();
     }
   }
 
