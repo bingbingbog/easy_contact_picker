@@ -175,7 +175,6 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
             columns
             , null, null, CallLog.Calls.DEFAULT_SORT_ORDER// 按照时间逆序排列，最近打的最先显示
     );
-    Log.i(TAG,"cursor count:" + cursor.getCount());
     while (cursor.moveToNext()) {
       HashMap<String, String> map =  new HashMap<String, String>();
       String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
