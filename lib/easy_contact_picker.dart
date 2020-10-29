@@ -21,7 +21,21 @@ class EasyContactPicker {
     });
     return contacts;
   }
-
+  /// 获取通话记录
+  ///
+  /// return list[Contact]。
+  Future<List<Contacts>> selectHistoryList() async {
+    final List result =
+    await _channel.invokeMethod('callHistoryList');
+    if (result == null) {
+      return null;
+    }
+    List<Contacts> contacts = new List();
+    result.forEach((f){
+      contacts.add(new Contacts.fromMap(f));
+    });
+    return contacts;
+  }
   /// 打开原生通讯录
   ///
   /// return [Contact]。
@@ -56,4 +70,28 @@ class Contact {
 
   @override
   String toString() => '$fullName: $phoneNumber';
+}
+/// Represents a contact selected by the user.
+class Contacts {
+  Contacts({this.callNumber, this.callNumber, this.callDateStr,this.callDurationStr});
+
+  factory Contacts.fromMap(Map<dynamic, dynamic> map) => new Contacts(
+    callName: map['callNumber'],
+    callNumber: map['callNumber'],
+    callDateStr: map['callDateStr'],
+    callDurationStr: map['callDurationStr'],
+  );
+
+  /// The full name of the contact, e.g. "Dr. Daniel Higgens Jr.".
+  final String callNumber;
+
+  /// The phone number of the contact.
+  final String callNumber;
+
+  /// The firstLetter of the fullName.
+  final String callDateStr;
+  final String callDurationStr;
+
+  @override
+  String toString() => '$callNumber: $callNumber -$callDateStr -$callDurationStr';
 }
