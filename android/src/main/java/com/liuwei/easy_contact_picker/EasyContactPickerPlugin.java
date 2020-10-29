@@ -188,11 +188,6 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
         int type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE)); //获取通话类型：1.呼入2.呼出3.未接
         String dayCurrent = new SimpleDateFormat("dd").format(new Date());
         String dayRecord = new SimpleDateFormat("dd").format(new Date(dateLong));
-        Log.i(TAG,"Call log: " + "\n"
-                + "name: " + name +"\n"
-                + "phone number: " + number  + "\n"
-
-        );
         map.put("callName", name);
         map.put("callNumber", number);
         map.put("callDateStr", date);
