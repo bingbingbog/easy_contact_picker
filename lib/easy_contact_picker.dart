@@ -21,7 +21,7 @@ class EasyContactPicker {
     });
     return contacts;
   }
-  /// 获取通话记录
+  /// 获取通话记录1
   ///
   /// return list[Contact]。
   Future<List<Contacts>> selectHistoryList() async {
