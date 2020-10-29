@@ -50,6 +50,11 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
   // 获取联系人列表
   static final String METHOD_CALL_LIST = "selectContactList";
   static final String CallHistoryList = "callHistoryList";
+  private String[] columns = {CallLog.Calls.CACHED_NAME// 通话记录的联系人
+          , CallLog.Calls.NUMBER// 通话记录的电话号码
+          , CallLog.Calls.DATE// 通话记录的日期
+          , CallLog.Calls.DURATION// 通话时长
+          , CallLog.Calls.TYPE};/
   private Activity mActivity;
   private ContactsCallBack contactsCallBack;
 
@@ -164,103 +169,38 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
 
   }
 
-  @TargetApi(Build.VERSION_CODES.N)
-  @SuppressLint("MissingPermission")
-  private void getCallHistoryList(Activity activity){
+  private void getCallHistoryList(){
     List contacts = new ArrayList<>();
-    Cursor cs;
-    cs = activity.getContentResolver().query(CallLog.Calls.CONTENT_URI, //系统方式获取通讯录存储地址
-            new String[]{
-                    CallLog.Calls.CACHED_NAME,  //姓名
-                    CallLog.Calls.NUMBER,    //号码
-                    CallLog.Calls.TYPE,  //呼入/呼出(2)/未接
-                    CallLog.Calls.DATE,  //拨打时间
-                    CallLog.Calls.DURATION,   //通话时长
-            }, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
-    int i = 0;
-    if (cs != null && cs.getCount() > 0) {
-      Date date = new Date(System.currentTimeMillis());
-      SimpleDateFormat simpleDateFormat = null;
+    Cursor cursor = mActivity.getContentResolver().query(CallLog.Calls.CONTENT_URI, // 查询通话记录的URI
+            columns
+            , null, null, CallLog.Calls.DEFAULT_SORT_ORDER// 按照时间逆序排列，最近打的最先显示
+    );
+    Log.i(TAG,"cursor count:" + cursor.getCount());
+    while (cursor.moveToNext()) {
+      HashMap<String, String> map =  new HashMap<String, String>();
+      String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
+      String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));  //号码
+      long dateLong = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)); //获取通话日期
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      }
-      String date_today = simpleDateFormat.format(date);
-      for (cs.moveToFirst(); (!cs.isAfterLast()) && i < 100; cs.moveToNext(), i++) {
-        HashMap<String, String> map =  new HashMap<String, String>();
-        String callName = cs.getString(0);  //名称
-        String callNumber = cs.getString(1);  //号码
-        //如果名字为空，在通讯录查询一次有没有对应联系人
-        if (callName == null || callName.equals("")){
-          String[] cols = {ContactsContract.PhoneLookup.DISPLAY_NAME};
-          //设置查询条件
-          String selection = ContactsContract.CommonDataKinds.Phone.NUMBER + "='"+callNumber+"'";
-          Cursor cursor = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                  cols, selection, null, null);
-          int nameFieldColumnIndex = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
-          if (cursor.getCount()>0){
-            cursor.moveToFirst();
-            callName = cursor.getString(nameFieldColumnIndex);
-          }
-          cursor.close();
-        }
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(dateLong));
+        String time = new SimpleDateFormat("HH:mm").format(new Date(dateLong));
+        int duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));//获取通话时长，值为多少秒
+        int type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE)); //获取通话类型：1.呼入2.呼出3.未接
+        String dayCurrent = new SimpleDateFormat("dd").format(new Date());
+        String dayRecord = new SimpleDateFormat("dd").format(new Date(dateLong));
+        Log.i(TAG,"Call log: " + "\n"
+                + "name: " + name +"\n"
+                + "phone number: " + number  + "\n"
 
-        //拨打时间
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date callDate = new Date(Long.parseLong(cs.getString(3)));
-        String callDateStr = sdf.format(callDate);
-        if (callDateStr.equals(date_today)) { //判断是否为今天
-          sdf = new SimpleDateFormat("HH:mm");
-          callDateStr = sdf.format(callDate);
-        } else if (date_today.contains(callDateStr.substring(0, 7))) { //判断是否为当月
-          sdf = new SimpleDateFormat("dd");
-          int callDay = Integer.valueOf(sdf.format(callDate));
-
-          int day = Integer.valueOf(sdf.format(date));
-          if (day - callDay == 1) {
-            callDateStr = "昨天";
-          } else {
-            sdf = new SimpleDateFormat("MM-dd");
-            callDateStr = sdf.format(callDate);
-          }
-        } else if (date_today.contains(callDateStr.substring(0, 4))) { //判断是否为当年
-          sdf = new SimpleDateFormat("MM-dd");
-          callDateStr = sdf.format(callDate);
-        }
-
-        //通话时长
-        int callDuration = Integer.parseInt(cs.getString(4));
-        int min = callDuration / 60;
-        int sec = callDuration % 60;
-        String callDurationStr = "";
-        if (sec > 0) {
-          if (min > 0) {
-            callDurationStr = min + "分" + sec + "秒";
-          } else {
-            callDurationStr = sec + "秒";
-          }
-        }
-
-        /**
-         * callName 名字
-         * callNumber 号码
-         * callTypeStr 通话类型
-         * callDateStr 通话日期
-         * callDurationStr 通话时长
-         * 请在此处执行相关UI或存储操作，之后会查询下一条通话记录
-         */
-        Log.i("Msg","callName"+callName);
-        Log.i("Msg","callNumber"+callNumber);
-        Log.i("Msg","callDateStr"+callDateStr);
-        Log.i("Msg","callDurationStr"+callDurationStr);
-        map.put("callName", callName);
-        map.put("callNumber", callNumber);
-        map.put("callDateStr", callDateStr);
-        map.put("callDurationStr", callDurationStr);
+        );
+        map.put("callName", name);
+        map.put("callNumber", number);
+        map.put("callDateStr", date);
+        map.put("callDurationStr", duration+"");
         contacts.add(map);
       }
-      contactsCallBack.successWithLists(contacts);
+      contactsCallBack.successWithList(contacts);
     }
-
   }
 
   @Override
