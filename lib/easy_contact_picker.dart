@@ -15,11 +15,11 @@ class EasyContactPicker {
     if (result == null) {
       return null;
     }
-    List<Contact> contacts = new List();
-    result.forEach((f){
-      contacts.add(new Contact.fromMap(f));
-    });
-    return contacts;
+//     List<Contact> contacts = new List();
+//     result.forEach((f){
+//       contacts.add(new Contact.fromMap(f));
+//     });
+    return result;
   }
   /// 获取通话记录1
   ///
@@ -30,11 +30,11 @@ class EasyContactPicker {
     if (result == null) {
       return null;
     }
-    List<Contacts> contacts = new List();
-    result.forEach((f){
-      contacts.add(new Contacts.fromMap(f));
-    });
-    return contacts;
+//     List<Contacts> contacts = new List();
+//     result.forEach((f){
+//       contacts.add(new Contacts.fromMap(f));
+//     });
+    return result;
   }
   /// 打开原生通讯录
   ///
