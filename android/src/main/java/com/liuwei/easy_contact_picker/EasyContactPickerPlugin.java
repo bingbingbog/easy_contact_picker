@@ -175,26 +175,30 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
             columns
             , null, null, CallLog.Calls.DEFAULT_SORT_ORDER// 按照时间逆序排列，最近打的最先显示
     );
-    while (cursor.moveToNext()) {
-      HashMap<String, String> map =  new HashMap<String, String>();
-      String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
-      String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));  //号码
-      long dateLong = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)); //获取通话日期
-      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(dateLong));
-        String time = new SimpleDateFormat("HH:mm").format(new Date(dateLong));
-        int duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));//获取通话时长，值为多少秒
-        int type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE)); //获取通话类型：1.呼入2.呼出3.未接
-        String dayCurrent = new SimpleDateFormat("dd").format(new Date());
-        String dayRecord = new SimpleDateFormat("dd").format(new Date(dateLong));
-        map.put("callName", name);
-        map.put("callNumber", number);
-        map.put("callDateStr", date);
-        map.put("callDurationStr", duration+"");
-        contacts.add(map);
+    if (cursor != null) {
+      while (cursor.moveToNext()) {
+        HashMap<String, String> map =  new HashMap<String, String>();
+        String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
+        String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));  //号码
+        long dateLong = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)); //获取通话日期
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(dateLong));
+          String time = new SimpleDateFormat("HH:mm").format(new Date(dateLong));
+          int duration = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.DURATION));//获取通话时长，值为多少秒
+          int type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE)); //获取通话类型：1.呼入2.呼出3.未接
+          String dayCurrent = new SimpleDateFormat("dd").format(new Date());
+          String dayRecord = new SimpleDateFormat("dd").format(new Date(dateLong));
+          map.put("callName", name);
+          map.put("callNumber", number);
+          map.put("callDateStr", date);
+          map.put("callDurationStr", duration+"");
+          contacts.add(map);
+        }
       }
+      cursor.close();
       contactsCallBack.successWithList(contacts);
     }
+
   }
 
   @Override
