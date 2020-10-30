@@ -92,7 +92,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
       intentToContact();
     }
     else if (call.method.equals(METHOD_CALL_LIST)){
-      Log.i("call.method",call.method+"");
+//       Log.i("call.method",call.method+"");
       contactsCallBack = new ContactsCallBack() {
         @Override
         void successWithList(List<HashMap> contacts) {
@@ -108,7 +108,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
       getContacts();
     }
     else if (call.method.equals(CallHistoryList)){
-      Log.i("call.method",call.method+"");
+//       Log.i("call.method",call.method+"");
       contactsCallBack = new ContactsCallBack() {
         @Override
         void successWithLists(List<HashMap> contacts) {
@@ -167,7 +167,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
       }
       cursor.close();
       contactsCallBack.successWithList(contacts);
-      Log.i("getContacts",contacts.toString()+"");
+//       Log.i("getContacts",contacts.toString()+"");
     }
 
   }
@@ -202,7 +202,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
       }
       cursor.close();
       contactsCallBack.successWithLists(contacts);
-      Log.i("getCallHistoryList",contacts.toString()+"");
+//       Log.i("getCallHistoryList",contacts.toString()+"");
     }
 
   }
