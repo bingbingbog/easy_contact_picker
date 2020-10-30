@@ -179,7 +179,9 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
             , null, null, CallLog.Calls.DEFAULT_SORT_ORDER// 按照时间逆序排列，最近打的最先显示
     );
     if (cursor != null) {
-      while (cursor.moveToNext()) {
+      int i=0;
+      while (cursor.moveToNext()&&i<100) {
+        i+=1;
         HashMap<String, String> map =  new HashMap<String, String>();
         String name = cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME));  //姓名
         String number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER));  //号码
@@ -199,7 +201,7 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
         }
       }
       cursor.close();
-      contactsCallBack.successWithList(contacts);
+      contactsCallBack.successWithLists(contacts);
       Log.i("getCallHistoryList",contacts.toString()+"");
     }
 
@@ -247,4 +249,3 @@ public class EasyContactPickerPlugin implements MethodCallHandler, PluginRegistr
     void error(){};
   }
 }
-
