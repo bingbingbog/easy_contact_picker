@@ -9,7 +9,7 @@ class EasyContactPicker {
   /// 获取通讯录列表
   ///
   /// return list[Contact]。
-  Future<String> selectContacts() async {
+  Future<List> selectContacts() async {
     final List result =
     await _channel.invokeMethod('selectContactList');
     if (result == null) {
@@ -19,12 +19,12 @@ class EasyContactPicker {
 //     result.forEach((f){
 //       contacts.add(new Contact.fromMap(f));
 //     });
-    return result.toString();
+    return result;
   }
   /// 获取通话记录1
   ///
   /// return list[Contact]。
-  Future<String> selectHistoryList() async {
+  Future<List> selectHistoryList() async {
     final List result =
     await _channel.invokeMethod('callHistoryList');
     if (result == null) {
@@ -34,7 +34,7 @@ class EasyContactPicker {
 //     result.forEach((f){
 //       contacts.add(new Contacts.fromMap(f));
 //     });
-    return result.toString();
+    return result;
   }
   /// 打开原生通讯录
   ///
